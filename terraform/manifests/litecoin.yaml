@@ -1,0 +1,7 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: litecoin
+  namespace: default
+spec:
+  chart: https://github.com/guigo2k/litecoin/releases/download/v0.2.0/litecoin-0.2.0.tgz
