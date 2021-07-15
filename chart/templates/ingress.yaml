@@ -1,0 +1,22 @@
+{{- $fullName := include "litecoin.fullname" . -}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "litecoin.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.ingress.entryPoints }}
+  entryPoints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  routes:
+    {{- range .Values.ingress.routes }}
+    - kind: Rule
+      match: {{ . | quote }}
+      services:
+      - name: {{ $fullName }}
+        port: 9332
+    {{- end }}
+{{- end }}
