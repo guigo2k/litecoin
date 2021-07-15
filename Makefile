@@ -16,8 +16,8 @@ cluster: ## Creates the K3s cluster
 		-auto-approve
 
 deploy: ## Deploys the Helm chart
-	cd ./chart && \
-	helm upgrade litecoin -f values.yaml . \
+	helm upgrade litecoin ./chart -f ./chart/values.yaml \
+		--kubeconfig ./kubeconfig.yaml \
 		--install --atomic --debug
 
 kubeconfig: ## Gets the Kubeconfig file

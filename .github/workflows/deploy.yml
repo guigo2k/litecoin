@@ -1,0 +1,27 @@
+name: deploy
+on:
+  workflow_run:
+    workflows: ["release"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Helm
+      uses: Azure/setup-helm@v1
+
+    - name: Deploy Helm Chart
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        make kubeconfig
+        make deploy
