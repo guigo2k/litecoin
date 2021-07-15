@@ -1,0 +1,52 @@
+name: release
+on:
+  workflow_run:
+    workflows: ["build"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Semantic Version
+      uses: hennejg/github-tag-action@v4.2.4
+      id: version
+      with:
+        dry_run: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        release_branches: main
+
+    - name: Setup Helm
+      uses: Azure/setup-helm@v1
+
+    - name: Create Helm Package
+      shell: bash
+      env:
+        VERSION: ${{ steps.version.outputs.new_version }}
+      run: |
+        sed -i "s/version:.*/version: \"$VERSION\"/" chart/Chart.yaml
+        helm package ./chart
+
+    - name: Commit Chart.yaml
+      uses: EndBug/add-and-commit@v7
+      with:
+        add: chart/Chart.yaml
+        branch: ${{ github.head_ref }}
+        message: 'bump chart version'
+        author_name: github-actions
+        author_email: 41898282+github-actions[bot]@users.noreply.github.com
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: "*.tgz"
+        name: "Helm chart v${{ steps.version.outputs.new_version }}"
+        tag_name: v${{ steps.version.outputs.new_version }}
