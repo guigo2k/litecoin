@@ -37,14 +37,14 @@ module "k3s" {
   server_elb_subnets   = module.vpc.public_subnets
   server_ec2_subnets   = module.vpc.private_subnets
   server_instance_type = "t3.small"
-  server_node_size     = 1
+  server_node_size     = 3
   server_volume_size   = 20
 
   # agents
   agent_elb_subnets   = module.vpc.public_subnets
   agent_ec2_subnets   = module.vpc.private_subnets
   agent_instance_type = "t3.small"
-  agent_min_size      = 1
+  agent_min_size      = 3
   agent_max_size      = 10
   agent_volume_size   = 20
 
