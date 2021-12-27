@@ -25,7 +25,7 @@ jobs:
         push: false
 
     - name: Scan Docker Image
-      uses: anchore/scan-action@v2
+      uses: anchore/scan-action@v3.2.0
       id: scan
       with:
         image: "ghcr.io/guigo2k/litecoin:0.18.1"
