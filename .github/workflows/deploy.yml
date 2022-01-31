@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup Helm
-      uses: Azure/setup-helm@v1
+      uses: Azure/setup-helm@v2.0
 
     - name: Deploy Helm Chart
       shell: bash
