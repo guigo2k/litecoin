@@ -23,7 +23,7 @@ jobs:
         release_branches: main
 
     - name: Setup Helm
-      uses: Azure/setup-helm@v1
+      uses: Azure/setup-helm@v3
 
     - name: Create Helm Package
       shell: bash
